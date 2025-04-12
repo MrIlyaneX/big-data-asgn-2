@@ -1,6 +1,9 @@
 services:
   cluster-master:
-    image: firasj/spark-docker-cluster
+    platform: linux/amd64
+    build:
+      context: .
+      dockerfile: ./Dockerfile
     container_name: cluster-master
     ports:
       - "8088:8088"
@@ -14,6 +17,7 @@ services:
       - spark-cluster
     depends_on:
       - cluster-slave-1
+ #     - cluster-slave-2
       - cassandra-server
     hostname: cluster-master
     tty: true
@@ -22,16 +26,18 @@ services:
     entrypoint: 
       - bash
       - /app/app.sh
-    
   cluster-slave-1:
-    image: firasj/spark-docker-cluster
+    platform: linux/amd64
+    build:
+      context: .
+      dockerfile: ./Dockerfile
     container_name: cluster-slave-1
     networks:
       - spark-cluster
     hostname: cluster-slave-1
     tty: true
   # cluster-slave-2:
-  #   image: firasj/spark-docker-cluster
+  #   dockerfile: ./Dockerfile
   #   container_name: cluster-slave-2
   #   networks:
   #     - spark-cluster
@@ -43,7 +49,7 @@ services:
     image: cassandra
     container_name: cassandra-server
     ports:
-      - "7000:7000"
+      - "7001:7000"
     networks:
       - spark-cluster
     

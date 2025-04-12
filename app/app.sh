@@ -5,19 +5,18 @@ service ssh restart
 # Starting the services
 bash start-services.sh
 
-# Creating a virtual environment
-python3 -m venv .venv
-source .venv/bin/activate
-
-# Install any packages
-pip install -r requirements.txt  
+echo "Using venv at /opt/venv"
+source /opt/venv/bin/activate
 
 # Package the virtual env.
-venv-pack -o .venv.tar.gz
+venv-pack -p /opt/venv
+
+# build cassandra tables
+python init_cassandra.py
+deactivate
 
 # Collect data
 bash prepare_data.sh
-
 
 # Run the indexer
 bash index.sh data/sample.txt

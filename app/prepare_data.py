@@ -1,5 +1,4 @@
 from pathvalidate import sanitize_filename
-from tqdm import tqdm
 from pyspark.sql import SparkSession
 
 
@@ -7,6 +6,8 @@ spark = SparkSession.builder \
     .appName('data preparation') \
     .master("local") \
     .config("spark.sql.parquet.enableVectorizedReader", "true") \
+    .config("spark.executor.memory", "2g") \
+    .config("spark.driver.memory", "2g") \
     .getOrCreate()
 
 
@@ -23,5 +24,7 @@ def create_doc(row):
 
 df.foreach(create_doc)
 
-
+rdd = df.rdd.map(lambda row: f"{row['id']}\t{row['title']}\t{row['text']}")
+rdd.saveAsTextFile("/index/data")
+dd.collect()
 # df.write.csv("/index/data", sep = "\t")

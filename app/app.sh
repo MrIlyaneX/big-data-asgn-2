@@ -12,6 +12,7 @@ source /opt/venv/bin/activate
 venv-pack -p /opt/venv
 
 # build cassandra tables
+echo "Building Cassandra Tables"
 python init_cassandra.py
 deactivate
 

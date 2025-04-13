@@ -1,4 +1,9 @@
 import sys
 
-for line in sys.stdin:
-    print(line.strip())
+def main():
+    for line in sys.stdin:
+        print(line.strip())
+
+
+if __name__ == "__main__":
+    main()

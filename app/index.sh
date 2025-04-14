@@ -5,10 +5,10 @@ echo "This script include commands to run mapreduce jobs using hadoop streaming 
 PIPE_1_INPUT="/index/data/part-*"
 
 hdfs dfs -test -d /tmp/index && hdfs dfs -rm -r -skipTrash /tmp/index 
-
 hdfs dfs -ls /index/data
 
 # Pipeline 1 - creating statistics
+echo "Pipeline 1 - creating statistics"
 hadoop jar $HADOOP_HOME/share/hadoop/tools/lib/hadoop-streaming-*.jar \
   -files /app/mapreduce/mapper1.py,/app/mapreduce/reducer1.py \
   -archives /app/.venv.tar.gz#.venv \
@@ -25,6 +25,7 @@ hdfs dfs -ls /tmp/index/pipe1
 hdfs dfs -cat /tmp/index/pipe1/part-*
 
 # pipeline 2 - transfer statistics to cassandra
+echo "pipeline 2 - transfer statistics to cassandra"
 hadoop jar $HADOOP_HOME/share/hadoop/tools/lib/hadoop-streaming-*.jar \
   -files /app/mapreduce/mapper2.py,/app/mapreduce/reducer2.py \
   -archives /app/.venv.tar.gz#.venv \
@@ -35,6 +36,19 @@ hadoop jar $HADOOP_HOME/share/hadoop/tools/lib/hadoop-streaming-*.jar \
   -input /tmp/index/pipe1/part-* \
   -output /tmp/index/pipe2 \
   -numReduceTasks 1
+
+# pipeline 3 - Vectors based on B25
+# echo "pipeline 3 - Vectors based on B25"
+# hadoop jar $HADOOP_HOME/share/hadoop/tools/lib/hadoop-streaming-*.jar \
+#   -files /app/mapreduce/mapper3.py,/app/mapreduce/reducer3.py \
+#   -archives /app/.venv.tar.gz#.venv \
+#   -D mapreduce.reduce.memory.mb=4096 \
+#   -D mapreduce.framework.name=yarn \
+#   -mapper ".venv/bin/python mapper3.py" \
+#   -reducer ".venv/bin/python reducer3.py" \
+#   -input /tmp/index/pipe1/part-* \
+#   -output /tmp/index/pipe3 \
+#   -numReduceTasks 1
 
 
 echo "Input file is :"

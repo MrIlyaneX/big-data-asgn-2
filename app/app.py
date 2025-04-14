@@ -19,6 +19,10 @@ session.execute("""
 """)
 
 session.execute("""
+    DROP TABLE IF EXISTS term_index;
+""")
+
+session.execute("""
     CREATE TABLE IF NOT EXISTS term_vocab (
         term text,
         doc_id text,
@@ -30,10 +34,19 @@ session.execute("""
 
 session.execute("""
     CREATE TABLE IF NOT EXISTS global_doc_stats (
+        category text,
         key text,
         value float,
-        PRIMARY KEY(key)
-    )
+        doc_name text,
+        PRIMARY KEY (category, key)
+)
+""")
+
+session.execute("""
+    CREATE TABLE IF NOT EXISTS term_index (
+        term TEXT PRIMARY KEY,
+        idx INT
+    );
 """)
 
 session.shutdown()

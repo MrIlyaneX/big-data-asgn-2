@@ -12,22 +12,20 @@ def main():
     """)
 
     insert_stat_stmt = session.prepare("""
-        INSERT INTO global_doc_stats (key, value) VALUES (?, ?)
+        INSERT INTO global_doc_stats (category, key, value, doc_name) VALUES (?, ?, ?, ?)
     """)
 
     for line in sys.stdin:
-        input_terms = line.strip().split("\t", 2)
+        input_terms = line.strip().split("\t", 3)
 
         if "!doc" in input_terms:
-            _, doc, doc_size = input_terms
-            session.execute(insert_stat_stmt, (doc, float(doc_size)))
-
+            _, doc, doc_size, doc_name = input_terms
+            session.execute(insert_stat_stmt, ("doc", doc, float(doc_size), doc_name))
         elif "!stats" in input_terms:
-            _, key, stats = input_terms
-            session.execute(insert_stat_stmt, (key, float(stats)))
-
+            _, key, stats, _ = input_terms
+            session.execute(insert_stat_stmt, ("meta", key, float(stats), "meta_values"))
         else:
-            term, tf_dict, doc_list = input_terms
+            _, term, tf_dict, doc_list = input_terms
             try:
                 tf_dict = json.loads(tf_dict)
             except json.JSONDecodeError:

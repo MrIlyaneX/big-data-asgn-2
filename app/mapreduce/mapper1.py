@@ -19,9 +19,9 @@ def main():
         terms = re.findall(r"\w+", file_content.lower())
         tf = Counter(terms)
 
-        print(f"!doc\t{doc_id}\t{len(terms)}")
+        print(f"!doc\t{doc_id}\t{len(terms)}\t{file_name}")
         for term in tf:
-            print(f"{term}\t{tf[term]}\t{doc_id}")
+            print(f"!term\t{term}\t{tf[term]}\t{doc_id}")
 
 if __name__ == "__main__":
     main()
